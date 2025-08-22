@@ -1,6 +1,6 @@
 import { Request,Response } from "express"
-const getUser = (req:Request, res:Response) => {
-    res.json({success:true, message:"get user"})
+import { NotFoundError } from "../../utils/errors"
+const getUser = async (req:Request, res:Response) => {
 }
 
 
