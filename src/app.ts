@@ -1,15 +1,14 @@
-import express, { Request, Response } from "express";
-import dotenv from 'dotenv'
-import { userRouter } from "./routes";
+import express from "express";
+import route from "./modules/index";
+import  cors  from 'cors';
+import { errorHandler } from "./Middlewares/error.middleware";
+
 const app = express();
 
-dotenv.config({path: './.env'})
-
+app.use(cors())
 app.use(express.json());
-app.use(userRouter)
-
-
-
+app.use("/api",route)
+app.use(errorHandler)
 
 
 

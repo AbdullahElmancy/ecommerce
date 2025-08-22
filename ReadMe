@@ -1,27 +1,48 @@
 project/
 │── src/
-│   ├── routes/         # All your endpoints
-│   │   ├── user.routes.ts
-│   │   ├── auth.routes.ts
-│   │   └── index.ts    # Combines all routes
+│   ├── config/          # App & DB configs (env vars, db connection)
+│   │   ├── db.ts
+│   │   └── env.ts
 │   │
-│   ├── controllers/    # Functions handling requests (logic)
-│   │   ├── user.controller.ts
-│   │   └── auth.controller.ts
-│   │
-│   ├── middlewares/    # Validations, auth, error handlers
+│   ├── middlewares/     # Shared middlewares
+│   │   ├── auth.middleware.ts
 │   │   ├── validate.middleware.ts
-│   │   └── auth.middleware.ts
+│   │   └── error.middleware.ts
 │   │
-│   ├── validators/     # Schemas using Joi, Yup, Zod etc.
-│   │   ├── user.validator.ts
-│   │   └── auth.validator.ts
+│   ├── utils/           # Shared utilities
+│   │   ├── jwt.ts
+│   │   ├── password.ts
+│   │   ├── response.ts
+│   │   └── logger.ts
 │   │
-│   ├── models/         # DB models (if using MongoDB, Sequelize, etc.)
-│   │   ├── user.model.ts
+│   ├── modules/         # Feature-based modules
+│   │   ├── user/
+│   │   │   ├── user.routes.ts
+│   │   │   ├── user.controller.ts
+│   │   │   ├── user.service.ts
+│   │   │   ├── user.validator.ts
+│   │   │   └── user.model.ts
+│   │   │
+│   │   ├── auth/
+│   │   │   ├── auth.routes.ts
+│   │   │   ├── auth.controller.ts
+│   │   │   ├── auth.service.ts
+│   │   │   ├── auth.validator.ts
+│   │   │   └── auth.model.ts
+│   │   │
+│   │   ├── product/
+│   │   │   ├── product.routes.ts
+│   │   │   ├── product.controller.ts
+│   │   │   ├── product.service.ts
+│   │   │   ├── product.validator.ts
+│   │   │   └── product.model.ts
+│   │   │
+│   │   └── index.ts     # Exports all module routes
 │   │
-│   ├── app.ts          # Express app config (attach middlewares & routes)
-│   └── server.ts       # Start server
+│   ├── app.ts           # Express app config (middlewares + routes)
+│   └── server.ts        # Start server (and connect DB)
 │
-├── package.json
-└── tsconfig.json / jsconfig.json
+├── tests/               # Unit & integration tests
+│── .env
+│── package.json
+└── tsconfig.json

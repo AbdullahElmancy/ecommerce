@@ -1,8 +1,9 @@
 import app from "./app";
+import ENV from "./config/env";
 
-const port = process.env.PORT_DEVELOPER;
 
 
-app.listen(port, () => {
-  console.log(`🚀 Server running on http://localhost:${port}`);
+
+app.listen(ENV.PORT_DEVELOPER, () => {
+  console.log(`🚀 Server running on http://localhost:${ENV.PORT_DEVELOPER}/api/`);
 });
