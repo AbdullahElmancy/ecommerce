@@ -1,0 +1,27 @@
+project/
+│── src/
+│   ├── routes/         # All your endpoints
+│   │   ├── user.routes.ts
+│   │   ├── auth.routes.ts
+│   │   └── index.ts    # Combines all routes
+│   │
+│   ├── controllers/    # Functions handling requests (logic)
+│   │   ├── user.controller.ts
+│   │   └── auth.controller.ts
+│   │
+│   ├── middlewares/    # Validations, auth, error handlers
+│   │   ├── validate.middleware.ts
+│   │   └── auth.middleware.ts
+│   │
+│   ├── validators/     # Schemas using Joi, Yup, Zod etc.
+│   │   ├── user.validator.ts
+│   │   └── auth.validator.ts
+│   │
+│   ├── models/         # DB models (if using MongoDB, Sequelize, etc.)
+│   │   ├── user.model.ts
+│   │
+│   ├── app.ts          # Express app config (attach middlewares & routes)
+│   └── server.ts       # Start server
+│
+├── package.json
+└── tsconfig.json / jsconfig.json
