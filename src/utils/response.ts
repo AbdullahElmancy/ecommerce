@@ -11,8 +11,7 @@ const successResponse = (res:Response,data:object,message:string = "success",sta
 const errorResponse = (res:Response,message:string = "error",statusCode:number = 500)=>{
     return res.status(statusCode).json({
         status:"Fail",
-        message,
-        
+        message
     })
 }
 
