@@ -8,10 +8,12 @@ const successResponse = (res:Response,data:object,message:string = "success",sta
 }
 
 
-const errorResponse = (res:Response,message:string = "error",statusCode:number = 500)=>{
+const errorResponse = (res:Response,message:string = "error",statusCode:number = 500,status:string,stack?:any,errors?:any)=>{
     return res.status(statusCode).json({
-        status:"Fail",
-        message
+        status:status || "Fail",
+        Error: message,
+        path: stack,
+        errors,
     })
 }
 

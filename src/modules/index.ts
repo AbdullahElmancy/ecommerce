@@ -1,6 +1,7 @@
 import { Router } from "express";
-import userRoute from "./user/user.routes"
-const route = Router()
-route.use(userRoute)
 
+import useAuth from "./auth/auth.route"
+const route = Router()
+
+route.use("/auth",useAuth)
 export default route
