@@ -1,8 +1,8 @@
 import passport from "passport";
 import { Strategy as GoogleStrategy, Profile as GoogleProfile } from "passport-google-oauth20";
 import { Strategy as FacebookStrategy, Profile as FacebookProfile } from "passport-facebook";
-import userModel,{ User } from "../modules/user/user.model";
 import ENV from "./env";
+import userModel,{ IUser } from "../modules/user/user.model";
 import { addUserService, findByIdService, findUserService } from "../modules/user/user.service";
 
 passport.serializeUser((user: any, done) => {
@@ -36,7 +36,8 @@ passport.use(
           user = await addUserService({
             provider: "google",
             providerId: profile.id,
-            full_name: profile.displayName,
+            first_name: profile.displayName?.split(" ")[0],
+            last_name: profile.displayName?.split(" ")[1],
             email: profile.emails?.[0].value,
             avatar: profile.photos?.[0].value,
           })

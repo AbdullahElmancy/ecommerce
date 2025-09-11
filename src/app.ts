@@ -7,6 +7,7 @@ import passport from "./config/passport";
 import { errorHandler } from "./Middlewares/error.middleware";
 import bodyParser from "body-parser";
 
+
 const app = express();
 app.use(cors({
     origin:"*",
@@ -23,5 +24,5 @@ app.use("/api",route)
 
 
 
-// app.use(errorHandler)
+app.use(errorHandler)
 export default app
