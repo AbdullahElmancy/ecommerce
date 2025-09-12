@@ -5,8 +5,9 @@ import { successResponse } from "../../utils/response";
 import { comparePasswords, hashPassword } from "../../utils/password";
 import { generateToken } from "../../utils/jwt";
 import { IUser } from "./user.model";
-import { NotFoundError } from "../../utils/errors";
+import { NotFoundError, UnauthorizedError } from "../../utils/errors";
 import { decryptMobile, encryptMobile } from "../../utils/mobile";
+import { validId } from "../../utils/validId";
 
 export const createUserController = async(req:Request,res:Response)=>{
     const {first_name,last_name,email,password} = req.body;
@@ -25,7 +26,11 @@ export const loginUserController = async(req:Request,res:Response)=>{
     const checkPass = await comparePasswords(password,user.password)
     if(!checkPass) throw new AppError("Invalid email or password",400)
     const token = generateToken({id:user._id},"7d")
-    successResponse(res,{id:user._id,email,name:`${user?.first_name} ${user?.last_name}`,mobile:user?.mobile,role:user?.role,token},"User login successfully")
+    const refreshToken = generateToken({id:user._id},"30d")
+    user.refreshToken = refreshToken
+    await user.save()
+    res.cookie("refreshToken",refreshToken,{httpOnly:true,maxAge:30*24*60*60*1000})
+    successResponse(res,{id:user._id,email,name:`${user?.first_name} ${user?.last_name}`,mobile:user?.mobile,role:user?.role,token,refreshToken},"User login successfully")
 }
 
 
@@ -37,7 +42,8 @@ export const getAllUserController = async(req:Request,res:Response)=>{
 
 export const getUserController = async(req:Request,res:Response)=>{
     const {id} = req.params
-    const user = await findByIdService(id)
+    const objectId = validId(id)
+    const user = await findByIdService(objectId)
     if(!user) throw new NotFoundError("User not found")
     if(user.mobile) user.mobile = decryptMobile(user.mobile)
     successResponse(res,user,"User fetched successfully")
@@ -45,16 +51,47 @@ export const getUserController = async(req:Request,res:Response)=>{
 
 
 export const deleteUserController = async(req:Request,res:Response)=>{
-    const {id} = req.params
-    const user = await deleteUserService(id)
+    if(!req.user) throw new AppError("inter server error",505)
+    const {_id} = req.user as IUser
+    if(!_id) throw new NotFoundError("user not exist")
+    const user = await deleteUserService(_id)
     if(!user) throw new NotFoundError("User not found")
     successResponse(res,user,"User deleted successfully")
 }
 
 export const updateUserController = async(req:Request,res:Response)=>{
-    const {id} = req.params
+    if(!req.user) throw new AppError("inter server error",505)
+    const {_id,role} = req.user as IUser
+    if(!_id) throw new NotFoundError("user not exist")
     if(req.body.mobile) req.body.mobile = encryptMobile(req.body.mobile);
-    const user = await updateUserService(id,req.body)
+    if(role !== "superAdmin") throw new UnauthorizedError("your can't change your role") 
+    const user = await updateUserService(_id,req.body)
+    if(!user) throw new NotFoundError("User not found")
+    successResponse(res,user,"User updated successfully")
+}
+
+export const blockUserController = async(req:Request,res:Response)=>{
+    const {id}= req.params
+    const objectId =validId(id)
+    const user = await updateUserService(objectId,{isBlocked:true})
+    if(!user) throw new NotFoundError("User not found")
+    successResponse(res,user,"User updated successfully")
+}
+
+export const unBlockUserController = async(req:Request,res:Response)=>{
+    const {id}= req.params
+    const objectId =validId(id)
+    const user = await updateUserService(objectId,{isBlocked:false})
+    if(!user) throw new NotFoundError("User not found")
+    successResponse(res,user,"User updated successfully")
+}
+
+
+export const changeRole = async(req:Request,res:Response)=>{
+    const {id}= req.params
+    const objectId =validId(id)
+    if(!req.body.role) throw new NotFoundError("Role not found")
+    const user = await updateUserService(objectId,{role:req.body.role})
     if(!user) throw new NotFoundError("User not found")
     successResponse(res,user,"User updated successfully")
 }

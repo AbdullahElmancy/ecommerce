@@ -1,6 +1,6 @@
-import mongoose from 'mongoose'; // Erase if already required
+import mongoose, { Types } from 'mongoose'; // Erase if already required
 export interface IUser {
-    _id?: string;
+    _id?: Types.ObjectId;
     first_name: string;
     last_name: string;
     email: string;
@@ -9,12 +9,19 @@ export interface IUser {
     role: string;
     provider?: string;
     providerId?: string;
-    avatar?: string
+    avatar?: string;
+    cart: string[];
+    wishlist?: Types.ObjectId[];
+    addresses?:Types.ObjectId[];
+    isBlocked:boolean;
+    refreshToken?:string
 }
 
 enum Role {
     USER = "user",
     ADMIN = "admin",
+    HR = "hr",
+    SUPERVISOR = "supervisor"
 }
 // Declare the Schema of the Mongo model
 const userSchema = new mongoose.Schema<IUser>({
@@ -33,7 +40,6 @@ const userSchema = new mongoose.Schema<IUser>({
     },
     mobile:{
         type:String,
-        unique:true,
     },
     password:{
         type:String,
@@ -43,9 +49,20 @@ const userSchema = new mongoose.Schema<IUser>({
         type: String,
         enum: Object.values(Role),
         default: Role.USER,
-    }
-});
+    },
+    cart:{
+        type:[String],
+        default:[]
+    },
+    wishlist:[{type:Types.ObjectId,ref:"Product"}],
+    addresses:[{type:Types.ObjectId,ref:"Address"}],
+    isBlocked:{
+        type:Boolean,
+        default:false
+    },
+    refreshToken: String
+},{timestamps:true});
 
-const userModel = mongoose.model<IUser>('user', userSchema);
+const userModel = mongoose.model<IUser>('User', userSchema);
 
 export default userModel

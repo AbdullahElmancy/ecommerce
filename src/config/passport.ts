@@ -4,6 +4,7 @@ import { Strategy as FacebookStrategy, Profile as FacebookProfile } from "passpo
 import ENV from "./env";
 import userModel,{ IUser } from "../modules/user/user.model";
 import { addUserService, findByIdService, findUserService } from "../modules/user/user.service";
+import { validId } from "../utils/validId";
 
 passport.serializeUser((user: any, done) => {
   done(null, user.id);
@@ -11,7 +12,8 @@ passport.serializeUser((user: any, done) => {
 
 passport.deserializeUser(async (id: string, done) => {
   try {
-    const user = await findByIdService(id);
+    const objectId =validId(id)
+    const user = await findByIdService(objectId);
     done(null, user);
   } catch (err) {
     done(err, null);
