@@ -21,3 +21,4 @@ export const endPoints = {
     blockStatusUser:[role.Admin],
     changeRole:[role.SuperAdmin]
 }
+

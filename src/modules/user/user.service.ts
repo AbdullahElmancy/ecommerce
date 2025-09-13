@@ -8,6 +8,9 @@ export const findByIdService  = async (id: Types.ObjectId) => {
 export const findUserService = async (email: string) => {
     return await userModel.findOne({ email });
 }
+export const findRefreshToken = async (refreshToken: string) => {
+    return await userModel.findOne({ refreshToken });
+}
 export const addUserService = async(data:Partial<IUser>)=>{
     return await userModel.insertOne(data);
 }
@@ -15,6 +18,7 @@ export const addUserService = async(data:Partial<IUser>)=>{
 export const getAllUserService = async()=>{
     return await userModel.find({});
 }
+
 
 
 export const deleteUserService = async(id:Types.ObjectId)=>{

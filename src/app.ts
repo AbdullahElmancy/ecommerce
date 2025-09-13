@@ -6,9 +6,11 @@ import passport from "./config/passport";
 import cookieParser from "cookie-parser";
 import { errorHandler } from "./Middlewares/error.middleware";
 import bodyParser from "body-parser";
+import morgan from "morgan"
 
 
 const app = express();
+app.use(morgan('dev'))
 app.use(cors({
     origin:"*",
     methods:["GET","POST","PUT","DELETE","PATCH"]

@@ -21,7 +21,9 @@ enum Role {
     USER = "user",
     ADMIN = "admin",
     HR = "hr",
-    SUPERVISOR = "supervisor"
+    SUPERVISOR = "supervisor",
+    SUPERADMIN = "superAdmin",
+    TRADER = "trader"
 }
 // Declare the Schema of the Mongo model
 const userSchema = new mongoose.Schema<IUser>({

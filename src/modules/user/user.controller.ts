@@ -1,9 +1,9 @@
 import { Request, Response } from "express";
-import { addUserService, deleteUserService, findByIdService, findUserService, getAllUserService, updateUserService } from "./user.service";
+import { addUserService, deleteUserService, findByIdService, findRefreshToken, findUserService, getAllUserService, updateUserService } from "./user.service";
 import { AppError } from "../../utils/AppError";
 import { successResponse } from "../../utils/response";
 import { comparePasswords, hashPassword } from "../../utils/password";
-import { generateToken } from "../../utils/jwt";
+import { generateToken, verifyToken } from "../../utils/jwt";
 import { IUser } from "./user.model";
 import { NotFoundError, UnauthorizedError } from "../../utils/errors";
 import { decryptMobile, encryptMobile } from "../../utils/mobile";
@@ -95,3 +95,39 @@ export const changeRole = async(req:Request,res:Response)=>{
     if(!user) throw new NotFoundError("User not found")
     successResponse(res,user,"User updated successfully")
 }
+
+export const refreshTokenController = async(req:Request,res:Response)=>{
+    const cookie = req.cookies.refreshToken;    
+    if(!cookie) throw new NotFoundError("refresh token not found")
+    const user = await findRefreshToken(cookie)
+    if(!user) throw new NotFoundError("There is no user have this refresh token")
+    const decode = verifyToken(cookie) as {id:string}
+    if(decode.id !== (user._id).toString()) throw new NotFoundError("user not found")
+    const refreshToken = generateToken({id:user._id},"30d")
+    user.refreshToken = refreshToken
+    await user.save()
+    res.cookie("refreshToken",refreshToken,{httpOnly:true,maxAge:30*24*60*60*1000})
+    successResponse(res,{refreshToken},"generate new refresh token successfully")
+}
+
+
+export const logOutController = async(req:Request,res:Response)=>{
+    const cookie = req.cookies.refreshToken;
+    if(!cookie) throw new NotFoundError("refresh token not found")
+    const user = await findRefreshToken(cookie)
+    if(!user){
+        res.clearCookie("refreshToken",{
+            httpOnly:true,
+            secure:true,
+        })
+         throw new NotFoundError("There is no user have this refresh token")
+    }
+    user.refreshToken = ""
+    await user.save()
+      res.clearCookie("refreshToken",{
+            httpOnly:true,
+            secure:true,
+        })   
+    successResponse(res,{},"log out successfully")
+}
+
