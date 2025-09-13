@@ -25,7 +25,7 @@ export const getProductController = async(req:Request,res:Response)=>{
 }
 
 export const getAllProductsController = async(req:Request,res:Response)=>{
-    const products =  await getAllProductsService()
+    const products =  await getAllProductsService(req.query)
     successResponse(res,products,"all Products fetched successfully")
 }
 

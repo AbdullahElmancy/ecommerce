@@ -7,6 +7,7 @@ import cookieParser from "cookie-parser";
 import { errorHandler } from "./Middlewares/error.middleware";
 import bodyParser from "body-parser";
 import morgan from "morgan"
+import qs from "qs";
 
 
 const app = express();
@@ -15,8 +16,9 @@ app.use(cors({
     origin:"*",
     methods:["GET","POST","PUT","DELETE","PATCH"]
 }))
-app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.set("query parser", (str: string) => qs.parse(str));
 app.use(cookieParser())
 app.use(session({ secret: "secret", resave: false, saveUninitialized: true }));
 app.use(passport.initialize());
