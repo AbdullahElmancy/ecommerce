@@ -1,7 +1,7 @@
 import { model, Schema, Types } from "mongoose";
 
 export interface IProduct {
-  _id?: string;
+  _id?: Types.ObjectId;
   title: string;
   slug: string;
   description: string;
@@ -64,7 +64,7 @@ const productSchema = new Schema<IProduct>(
         star: Number,
         postedBy: { type: Schema.Types.ObjectId, ref: "User" },
       },
-    ],
+    ]
   },
   {
     timestamps: true,

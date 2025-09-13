@@ -19,6 +19,7 @@ export const endPoints = {
     updateUser:[role.Supervisor,role.Admin,role.User,role.HR],
     deleteUser:[role.Supervisor,role.Admin,role.User,role.HR],
     blockStatusUser:[role.Admin],
-    changeRole:[role.SuperAdmin]
+    changeRole:[role.SuperAdmin],
+    updatePassword:[role.User,role.Admin,role.HR,role.Supervisor]
 }
 

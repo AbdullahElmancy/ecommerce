@@ -14,7 +14,10 @@ export interface IUser {
     wishlist?: Types.ObjectId[];
     addresses?:Types.ObjectId[];
     isBlocked:boolean;
-    refreshToken?:string
+    refreshToken?:string;
+    passwordChangedAt?: Date;
+    passwordResetToken?: String ;
+    passwordResetExpires?: Date ;
 }
 
 enum Role {
@@ -62,7 +65,10 @@ const userSchema = new mongoose.Schema<IUser>({
         type:Boolean,
         default:false
     },
-    refreshToken: String
+    refreshToken: String,
+    passwordChangedAt: Date,
+    passwordResetToken: String,
+    passwordResetExpires: Date,
 },{timestamps:true});
 
 const userModel = mongoose.model<IUser>('User', userSchema);

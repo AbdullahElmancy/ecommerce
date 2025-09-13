@@ -3,7 +3,7 @@ import { errorResponse } from "../utils/response";
 type RequestPart = "body" | "params" | "query";
 const headerKeys: RequestPart[] = ["body", "params", "query"];
 
-export const validate = (schema: any) => {
+export const validation = (schema: any) => {
   return (req: Request, res: Response, next: NextFunction) => {
     const errors: any[] = [];
 

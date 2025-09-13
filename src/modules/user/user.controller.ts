@@ -1,13 +1,14 @@
 import { Request, Response } from "express";
-import { addUserService, deleteUserService, findByIdService, findRefreshToken, findUserService, getAllUserService, updateUserService } from "./user.service";
+import { addUserService, deleteUserService, findByIdService, findRefreshToken, findUserByToken, findUserService, getAllUserService, updatePasswordService, updateUserService } from "./user.service";
 import { AppError } from "../../utils/AppError";
 import { successResponse } from "../../utils/response";
-import { comparePasswords, hashPassword } from "../../utils/password";
+import { comparePasswords, createPasswordRestToken, hashPassword, passwordExpires } from "../../utils/password";
 import { generateToken, verifyToken } from "../../utils/jwt";
 import { IUser } from "./user.model";
 import { NotFoundError, UnauthorizedError } from "../../utils/errors";
 import { decryptMobile, encryptMobile } from "../../utils/mobile";
 import { validId } from "../../utils/validId";
+import { sendMail } from "../../utils/virfyEmail";
 
 export const createUserController = async(req:Request,res:Response)=>{
     const {first_name,last_name,email,password} = req.body;
@@ -131,3 +132,41 @@ export const logOutController = async(req:Request,res:Response)=>{
     successResponse(res,{},"log out successfully")
 }
 
+export const updatePasswordController = async(req:Request,res:Response)=>{
+    if(!req.user) throw new AppError("inter server error",505)
+    const {_id,password} = req.user as IUser
+    if(!_id) throw new NotFoundError("id is not found")
+    const {oldPassword,newPassword} = req.body
+    const hashedPassword = await hashPassword(newPassword)
+    const checkPass = await comparePasswords(oldPassword,password)
+    if(!checkPass) throw new AppError("Invalid password",400)
+    const newPasswordUser = await updatePasswordService(_id,hashedPassword)
+    if(!newPasswordUser) throw new NotFoundError("User not found")
+    successResponse(res,newPasswordUser,"User updated successfully")
+}
+
+export const forgetPasswordTokenController = async(req:Request,res:Response)=>{
+    const {email} = req.body;
+    const user = await findUserService(email)
+    if(!user) throw new NotFoundError("user wasn't found")
+    user.passwordResetToken = createPasswordRestToken()
+    user.passwordResetExpires = passwordExpires()
+    await user.save()
+    const token = user.passwordResetToken
+    sendMail(email,token,req)
+    successResponse(res,{token},"we send token")
+}
+
+export const restPasswordController = async(req:Request,res:Response)=>{
+    const {password} = req.body;
+    const {token} = req.params;
+    const user = await findUserByToken(token)
+    if(!user) throw new NotFoundError("user wasn't found")
+    const hashedPassword = await hashPassword(password)
+    user.password = hashedPassword
+    user.passwordChangedAt = new Date(Date.now())
+    user.passwordResetToken = undefined 
+    user.passwordResetExpires = undefined
+    await user.save()
+    successResponse(res,user,"User updated successfully")
+}

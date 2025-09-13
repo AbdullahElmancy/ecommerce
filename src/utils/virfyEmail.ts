@@ -12,16 +12,15 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-export const sendMail = async (mail: string, token: string, req: any,refreshToken:string  = "") => {
-  const verifyUrl = `${req.protocol}://${req.headers.host}/api/user/Confirmed/${token}`;
-  const verifyRefreshToken = `${req.protocol}://${req.headers.host}/api/user/refreshConfirm/${refreshToken}`;
+export const sendMail = async (mail: string, token: any,req:any) => {
+  const restUrl = `${req.protocol}://${req.headers.host}/api/user/rest-password/${token}`;
   const html = `
   <!doctype html>
   <html lang="en">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Verify your email</title>
+    <title>Rest Password</title>
     <style>
       /* Some email clients support simple media queries */
       @media only screen and (max-width: 600px) {
@@ -40,23 +39,23 @@ export const sendMail = async (mail: string, token: string, req: any,refreshToke
             <tr>
               <td style="padding:24px 32px; text-align:center; background: linear-gradient(90deg,#0ea5a4,#2563eb); color:white;">
                 <h1 style="margin:0; font-size:24px; font-weight:700;">Elmancy E-Commerce</h1>
-                <p style="margin:6px 0 0; font-size:14px; opacity:0.95;">Thanks for joining — one more step to verify your email</p>
+                <p style="margin:6px 0 0; font-size:14px; opacity:0.95;"> one  step to rest your password</p>
               </td>
             </tr>
 
             <!-- Body -->
             <tr>
               <td style="padding:32px;">
-                <h2 class="hero" style="margin:0 0 12px; font-size:20px; line-height:1.25; color:#111;">Verify your email address</h2>
+                <h2 class="hero" style="margin:0 0 12px; font-size:20px; line-height:1.25; color:#111;">rest your password</h2>
                 <p style="margin:0 0 20px; font-size:15px; color:#555;">
-                  Hi there — please confirm your email address so you can start using your Elmancy account. Click the button below to verify your email:
+                  Hi there — please rest your password so you can start using your Elmancy account. Click the button below to rest your email:
                 </p>
 
                 <!-- Button -->
                 <table role="presentation" cellpadding="0" cellspacing="0" style="margin:24px 0;">
                   <tr>
                     <td align="center">
-                      <a class="btn" href="${verifyUrl}" target="_blank" rel="noopener"
+                      <a class="btn" href="${restUrl}" target="_blank" rel="noopener"
                          style="background-color:#2563eb; color:#ffffff; text-decoration:none; padding:12px 22px; border-radius:8px; display:inline-block; font-weight:600; font-size:16px;">
                         Verify your email
                       </a>
@@ -68,23 +67,12 @@ export const sendMail = async (mail: string, token: string, req: any,refreshToke
                   If the button doesn't work, copy and paste this URL into your browser:
                 </p>
                 <p style="word-break:break-all; font-size:12px; color:#1a73e8; margin:6px 0 0;">
-                  <a href="${verifyUrl}" target="_blank" rel="noopener" style="color:#1a73e8; text-decoration:underline;">${verifyUrl}</a>
-                </p>
-
-                ${
-                  refreshToken === "" ? "" : ` <p style="margin:0 0 8px; font-size:13px; color:#666;">
-                  if the button doesn't work and URL also copy and paste this email into your password to resend verify email
-                </p>
-                <p style="word-break:break-all; font-size:12px; color:#1a73e8; margin:6px 0 0;">
-                  <a href="${verifyRefreshToken}" target="_blank" rel="noopener" style="color:#1a73e8; text-decoration:underline;">${verifyRefreshToken}</a>
-                </p>
-`
-                }
-               
+                  <a href="${restUrl}" target="_blank" rel="noopener" style="color:#1a73e8; text-decoration:underline;">${restUrl}</a>
+                </p>               
                 <hr style="border:none; border-top:1px solid #eef1f5; margin:22px 0;">
 
                 <p style="font-size:13px; color:#888; margin:0;">
-                  If you didn't create an account with us, you can safely ignore this email. This link will expire in 24 hours.
+                  If you didn't send for rest password, you can safely ignore this email. This link will expire in 10 minutes.
                 </p>
               </td>
             </tr>
@@ -113,17 +101,17 @@ export const sendMail = async (mail: string, token: string, req: any,refreshToke
   </html>
   `;
 
-  const text = `Verify your email\n\nOpen the link to verify: ${verifyUrl}\n\nIf you did not request this, ignore this email.`;
+  const text = `rest password`;
 
   await transporter.sendMail({
     from: `"Elmancy E-commerce" <${ENV.GOOGLE_EMAIL}>`,
     to: mail,
-    subject: "Verify your email",
-    attachments:[{
-      filename:"invoice.pdf",
-      path:path.join(process.cwd(), "src/uploads/invoice.pdf"),
-      contentType:"application/pdf"
-    }],
+    subject: "rest password",
+    // attachments:[{
+    //   filename:"invoice.pdf",
+    //   path:path.join(process.cwd(), "src/uploads/invoice.pdf"),
+    //   contentType:"application/pdf"
+    // }],
     text,
     html,
   });
