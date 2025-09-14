@@ -19,6 +19,7 @@ export const endPoints = {
     createProduct:[role.Admin,role.Trader],
     getProduct:[role.Admin,role.Trader,role.User],
     updateProduct:[role.Admin,role.Trader],
-    deleteProduct:[role.Admin,role.Trader]
+    deleteProduct:[role.Admin,role.Trader],
+    rateProduct:[role.User]
 }
 

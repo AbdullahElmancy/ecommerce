@@ -46,3 +46,5 @@ project/
 │── .env
 │── package.json
 └── tsconfig.json
+note add image or images for blog and user later
+make validtion for image

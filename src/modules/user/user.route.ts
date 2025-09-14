@@ -1,10 +1,11 @@
 import { Router} from "express";
 import { catchAsync } from "../../utils/catchAsync";
-import { blockUserController, changeRole, createUserController, deleteUserController, forgetPasswordTokenController, getAllUserController, getUserController, loginUserController, logOutController, refreshTokenController, restPasswordController, unBlockUserController, updatePasswordController, updateUserController } from "./user.controller";
+import { addToWishlistController, blockUserController, changeRole, createUserController, deleteUserController, forgetPasswordTokenController, getAllUserController, getUserController, loginUserController, logOutController, refreshTokenController, restPasswordController, unBlockUserController, updateAvatarUserController, updatePasswordController, updateUserController } from "./user.controller";
 import { auth } from "../../Middlewares/auth";
 import { endPoints } from "./endpoints";
 import { validation } from "../../Middlewares/validate";
-import { blockUserValidator, changeRoleValidator, createUserValidator, forgetPasswordValidator, getUserValidator, loginUserValidator, restPasswordValidator, unBlockUserValidator, updatePasswordValidator, updateUserValidator } from "./user.validator";
+import { blockUserValidator, changeRoleValidator, createUserValidator, forgetPasswordValidator, getUserValidator, loginUserValidator, restPasswordValidator, unBlockUserValidator, updatePasswordValidator, updateUserValidator, uploadAvatarValidator, wishValidator } from "./user.validator";
+import upload from "../../Middlewares/upload";
 
 const userRoute = Router();
 
@@ -23,4 +24,6 @@ userRoute.patch("/block-user/:id",auth(endPoints.blockStatusUser),validation(blo
 userRoute.patch("/unblock-user/:id",auth(endPoints.blockStatusUser),validation(unBlockUserValidator),catchAsync(unBlockUserController))
 userRoute.patch("/change-role/:id",auth(endPoints.changeRole),validation(changeRoleValidator),catchAsync(changeRole))
 userRoute.patch("/change-password",auth(endPoints.updatePassword),validation(updatePasswordValidator),catchAsync(updatePasswordController))
+userRoute.patch("/wish/",auth(endPoints.wishUser),validation(wishValidator),catchAsync(addToWishlistController))
+userRoute.patch("/avatar",auth(endPoints.avatar),upload.single("avatar"),validation(uploadAvatarValidator),catchAsync(updateAvatarUserController))
 export default userRoute

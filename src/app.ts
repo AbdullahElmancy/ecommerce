@@ -29,5 +29,5 @@ app.use("/api",route)
 
 
 
-app.use(errorHandler)
+// app.use(errorHandler)
 export default app

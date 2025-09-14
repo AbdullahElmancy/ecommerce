@@ -1,22 +1,24 @@
 import z from "zod";
+import { serverFileSchema, serverFilesSchema } from "../../validator/multer.validator";
+import { objectIdSchema } from "../../validator/ID.validator";
 
 export const createProductValidator = {
   body: z.object({
     title: z.string().min(4).max(100),
     slug: z.string().min(4).max(100).optional(),
     description: z.string().min(10),
-    price: z.number(),
-    images: z.array(z.string()).optional(),
-    quantity: z.number(),
-    category: z.array(z.string()),
+    price: z.coerce.number(),
+    quantity: z.coerce.number(),
+    category:z.string(),
     brand: z.string(),
     color: z.string(),
   }),
+  files:serverFilesSchema
 };
 
 export const getProductValidator = {
   params: z.object({
-    id: z.string().length(24),
+    id: objectIdSchema,
   }),
 };
 
@@ -45,14 +47,13 @@ export const getAllProductValidator = {
 
 export const updateProductValidator = {
   params: z.object({
-    id: z.string().length(24),
+    id: objectIdSchema,
   }),
  body: z.object({
     title: z.string().min(4).max(100).optional(),
     slug: z.string().min(4).max(100).optional(),
     description: z.string().min(10).optional(),
     price: z.number().min(1).optional(),
-    images: z.array(z.string()).optional(),
     quantity: z.number().optional(),
     category: z.array(z.string()).optional(),
     brand: z.string().optional(),
@@ -60,7 +61,7 @@ export const updateProductValidator = {
     ratings: z.array(
       z.object({
         star: z.number().min(1).max(5).optional(),
-        postedBy: z.string().length(24).optional(),
+        postedBy: objectIdSchema.optional(),
       })
     ).optional(),
     sold: z.number().min(0).optional(),
@@ -69,7 +70,15 @@ export const updateProductValidator = {
 
 export const deleteProductValidator = {
   params: z.object({
-    id: z.string().length(24),
+    id: objectIdSchema,
   })
- 
 };
+
+export const rateProductValidator = {
+  body: z.object({
+    prodId: objectIdSchema,
+    star: z.number().min(1).max(5),
+    comment:z.string().min(5).max(100).optional()
+  })
+};
+

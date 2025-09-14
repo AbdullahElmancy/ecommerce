@@ -8,7 +8,7 @@ export const findProductService = async(slug:string)=>{
 }
 
 export const findProductByIdService = async(id:Types.ObjectId)=>{
-    return await productModel.findById(id).populate("category",{title:1})
+    return await productModel.findById(id).populate("category",{title:1}).populate("brand",{title:1})
 }
 export const createProductService  =async(data:Partial<IProduct>)=>{
     return await productModel.insertOne(data)
@@ -44,14 +44,23 @@ export const getAllProductsService = async(queries:any = {})=>{
             const num = await productModel.countDocuments(JSON.parse(queryStringify))
             if(skip >= num) throw new NotFoundError("This page does not exist")
         }
-        let product = await query  
+        let product = await query.populate("category",{title:1}).populate("brand",{title:1})  
  return product
 }
 
 export const updateProductService = async(id:Types.ObjectId,data:Partial<IProduct>)=>{
     return await productModel.findByIdAndUpdate(id,data,{new:true});
 }
-
 export const deleteProductService = async(id:Types.ObjectId)=>{
     return await productModel.findByIdAndDelete(id);
+}
+
+export const addRatingService = async(prodId:Types.ObjectId,userId:Types.ObjectId,star:number,comment:string = "")=>{
+    return await productModel.findByIdAndUpdate(prodId,{$push:{ratings:{star,postedBy:userId,comment}}},{new:true})
+}
+
+export const updateRatingService = async(prodId:Types.ObjectId,userId:Types.ObjectId,star:number,comment:string = "")=>{
+    return await productModel.findOneAndUpdate(  { "ratings.postedBy": userId },
+  { $set: { "ratings.$.star": star ,"ratings.$.comment":comment} },
+  { new: true })
 }

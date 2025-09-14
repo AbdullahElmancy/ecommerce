@@ -20,7 +20,7 @@ export const auth = (role: string[]) => {
         if (!findUser) throw new NotFoundError("you aren't exist");
 
         req.user = findUser;
-        
+                
         if(!findUser.role||!role.includes(findUser.role)) throw new UnauthorizedError("you aren't authorized");
         next();
     };

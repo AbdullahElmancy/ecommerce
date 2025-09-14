@@ -20,9 +20,6 @@ export const getAllUserService = async()=>{
     return await userModel.find({});
 }
 
-
-
-
 export const deleteUserService = async(id:Types.ObjectId)=>{
     return await userModel.findByIdAndDelete(id);
 }
@@ -37,4 +34,13 @@ export const updatePasswordService = async(id:Types.ObjectId,password:string)=>{
 
 export const findUserByToken = async(token:string)=>{
     return await userModel.findOne({passwordResetToken:token,passwordResetExpires:{$gt:Date.now()}});
+}
+
+
+export const addToUserWishListService = async(prodId:Types.ObjectId,userId:Types.ObjectId)=>{
+    return await userModel.findByIdAndUpdate(userId,{$push:{wishlist:prodId}},{new:true})
+}
+
+export const removeFromUserWishListService = async(prodId:Types.ObjectId,userId:Types.ObjectId)=>{
+    return await userModel.findByIdAndUpdate(userId,{$pull:{wishlist:prodId}},{new:true})
 }

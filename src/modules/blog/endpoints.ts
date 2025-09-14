@@ -3,21 +3,19 @@ interface IRole{
     Admin:string;
     HR:string;
     Supervisor:string;
-    SuperAdmin:string;
-    Trader:string
+    SuperAdmin:string
 }
 const role:IRole = {
     User:"user",
     Admin:"admin",
     HR:"hr",
     Supervisor:"supervisor",
-    SuperAdmin:"superAdmin",
-    Trader:"trader"
+    SuperAdmin:"superAdmin"
 }
 
 export const endPoints = {
-    createCategory:[role.Admin],
-    GetCategories:[role.Admin,role.Trader,role.User],
-    updateAndDeleteCategory:[role.Admin]
+    createBlog:[role.Admin],
+    getBlogs:[role.Admin,role.User],
+    updateBlog:[role.Admin],
+    deleteBlog:[role.Admin]
 }
-

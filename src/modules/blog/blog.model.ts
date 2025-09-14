@@ -19,10 +19,6 @@ const blogSchema = new Schema<IBlog>({
     description:{type:String,required:true},
     category:{type:Schema.Types.ObjectId,ref:"Category",required:true},
     numviews:{type:Number,default:0},
-    isLiked:{type:Boolean,default:false},
-    isDisliked:{type:Boolean,default:false},
-    likes:{type:[Schema.Types.ObjectId],ref:"User"},
-    dislikes:{type:[Schema.Types.ObjectId],ref:"User"},
     image:{type:String,default:"https://res.cloudinary.com/dbxtdpfre/image/upload/v1756828957/iuyyn2hstoueoipb8zht.png"},
     author:{type:String,default:"admin"}
 },{

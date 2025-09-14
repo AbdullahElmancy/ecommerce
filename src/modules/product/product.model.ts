@@ -10,9 +10,10 @@ export interface IProduct {
   quantity: number;
   images: string[];
   color: string;
-  brand: string;
-  ratings: Object[];
+  brand: Types.ObjectId;
+  ratings: {star:number,postedBy:Types.ObjectId}[];
   sold: number;
+  totalRating: number
 }
 
 const productSchema = new Schema<IProduct>(
@@ -52,7 +53,8 @@ const productSchema = new Schema<IProduct>(
       required:true
     },
     brand:{
-      type:String,
+      type:Schema.Types.ObjectId,
+      ref:"Brand",
       required:true
     },
     color:{
@@ -62,9 +64,14 @@ const productSchema = new Schema<IProduct>(
     ratings: [
       {
         star: Number,
+        comment:String,
         postedBy: { type: Schema.Types.ObjectId, ref: "User" },
       },
-    ]
+    ],
+    totalRating:{
+      type:Number,
+      default:0
+    }
   },
   {
     timestamps: true,

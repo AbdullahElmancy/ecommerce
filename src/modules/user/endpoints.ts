@@ -3,23 +3,27 @@ interface IRole{
     Admin:string;
     HR:string;
     Supervisor:string;
-    SuperAdmin:string
+    SuperAdmin:string;
+    Trader:string
 }
 const role:IRole = {
     User:"user",
     Admin:"admin",
     HR:"hr",
     Supervisor:"supervisor",
-    SuperAdmin:"superAdmin"
+    SuperAdmin:"superAdmin",
+    Trader:"trader"
 }
 
 export const endPoints = {
     getAUser:[role.User,role.Admin],
     all:[role.Admin,role.HR],
-    updateUser:[role.Supervisor,role.Admin,role.User,role.HR],
-    deleteUser:[role.Supervisor,role.Admin,role.User,role.HR],
+    updateUser:[role.Supervisor,role.Admin,role.User,role.HR,role.Trader],
+    deleteUser:[role.Supervisor,role.Admin,role.User,role.HR,role.Trader],
     blockStatusUser:[role.Admin],
     changeRole:[role.SuperAdmin],
-    updatePassword:[role.User,role.Admin,role.HR,role.Supervisor]
+    updatePassword:[role.User,role.Admin,role.HR,role.Supervisor,role.Trader],
+    wishUser:[role.User],
+    avatar:[role.User,role.Admin,role.HR,role.Supervisor,role.Trader]
 }
 

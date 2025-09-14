@@ -1,27 +1,22 @@
 import { model, Schema, Types } from "mongoose";
 import { required } from "zod/v4/core/util.cjs";
 
-export interface ICategory{
+export interface IBrand{
     _Id?:Types.ObjectId;
     title:string;
-    typeCategory:String
 }
 
-const categorySchema = new Schema<ICategory>({
+const brandSchema = new Schema<IBrand>({
     title:{
         type:String,
         required:true,
         unique:true,
         index:true
-    },
-    typeCategory:{
-        type:String,
-        required:true,
     }
 },{
     timestamps:true
 })
 
 
-const categoryModel = model("Category",categorySchema)
-export default categoryModel
+const brandModel = model("Brand",brandSchema)
+export default brandModel

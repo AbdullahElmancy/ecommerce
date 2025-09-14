@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { addUserService, deleteUserService, findByIdService, findRefreshToken, findUserByToken, findUserService, getAllUserService, updatePasswordService, updateUserService } from "./user.service";
+import { addToUserWishListService, addUserService, deleteUserService, findByIdService, findRefreshToken, findUserByToken, findUserService, getAllUserService, removeFromUserWishListService, updatePasswordService, updateUserService } from "./user.service";
 import { AppError } from "../../utils/AppError";
 import { successResponse } from "../../utils/response";
 import { comparePasswords, createPasswordRestToken, hashPassword, passwordExpires } from "../../utils/password";
@@ -9,6 +9,8 @@ import { NotFoundError, UnauthorizedError } from "../../utils/errors";
 import { decryptMobile, encryptMobile } from "../../utils/mobile";
 import { validId } from "../../utils/validId";
 import { sendMail } from "../../utils/virfyEmail";
+import cloudinary from "../../config/cloudnary";
+import  fs  from 'fs';
 
 export const createUserController = async(req:Request,res:Response)=>{
     const {first_name,last_name,email,password} = req.body;
@@ -167,6 +169,38 @@ export const restPasswordController = async(req:Request,res:Response)=>{
     user.passwordChangedAt = new Date(Date.now())
     user.passwordResetToken = undefined 
     user.passwordResetExpires = undefined
+    await user.save()
+    successResponse(res,user,"User updated successfully")
+}
+
+export const addToWishlistController = async(req:Request,res:Response)=>{
+    if(!req.user) {throw new NotFoundError("user is not exist")}
+    const {_id} = req.user as IUser
+    if(!_id) throw new NotFoundError("id not exist")
+    const {prodId} = req.body
+    const ObjectProdId = validId(prodId)
+    const user = await findByIdService(_id)
+    const alreadyAdded = user?.wishlist?.includes(ObjectProdId)
+    let addWish;
+    if(alreadyAdded){
+        addWish = await removeFromUserWishListService(ObjectProdId,_id)
+        successResponse(res,{addWish},"wish removed from wish")
+    }else{
+        addWish = await addToUserWishListService(ObjectProdId,_id)
+        successResponse(res,{addWish},"wish added to wish")
+    }
+}
+
+export const updateAvatarUserController  = async(req:Request,res:Response)=>{
+    if(!req.file) throw new NotFoundError("Avatar not found")
+    const {_id} = req.user as IUser
+    if(!_id) throw new NotFoundError("id not exist")
+    const user = await findByIdService(_id)
+    if(!user) throw new NotFoundError("User not found")
+    if(user.avatar) await cloudinary.uploader.destroy(user.avatar)
+    const result =await cloudinary.uploader.upload(req.file.path)
+    fs.unlinkSync(req.file.path)
+    user.avatar = result.public_id
     await user.save()
     successResponse(res,user,"User updated successfully")
 }

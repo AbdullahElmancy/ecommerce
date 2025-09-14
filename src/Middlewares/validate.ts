@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { errorResponse } from "../utils/response";
-type RequestPart = "body" | "params" | "query";
-const headerKeys: RequestPart[] = ["body", "params", "query"];
+type RequestPart = "body" | "params" | "query" | "file" | "files";
+const headerKeys: RequestPart[] = ["body", "params", "query","file","files"];
 
 export const validation = (schema: any) => {
   return (req: Request, res: Response, next: NextFunction) => {
@@ -13,7 +13,9 @@ export const validation = (schema: any) => {
         if (!result.success) {
           errors.push(result.error.format());
         } else {
-          req[key] = result.data;
+          if (key !== "query" ) {
+            req[key] = result.data;
+          }
         }
       }
     });

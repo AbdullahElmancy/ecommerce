@@ -16,8 +16,8 @@ const role:IRole = {
 }
 
 export const endPoints = {
-    createCategory:[role.Admin],
-    GetCategories:[role.Admin,role.Trader,role.User],
-    updateAndDeleteCategory:[role.Admin]
+    createBrand:[role.Admin],
+    GetBrands:[role.Admin,role.Trader,role.User],
+    updateAndDeleteBrand:[role.Admin]
 }
 

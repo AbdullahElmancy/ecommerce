@@ -69,6 +69,7 @@ const userSchema = new mongoose.Schema<IUser>({
     passwordChangedAt: Date,
     passwordResetToken: String,
     passwordResetExpires: Date,
+    avatar:String
 },{timestamps:true});
 
 const userModel = mongoose.model<IUser>('User', userSchema);
